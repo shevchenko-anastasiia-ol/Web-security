@@ -1,4 +1,4 @@
-﻿package chnu.cs.security26.service;
+package chnu.cs.security26.service;
 
 /*
     @author     Anastasiia Shevchenko
@@ -10,10 +10,12 @@
 
 
 import chnu.cs.security26.model.Book;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class BookService {
     private final List<Book> books = new ArrayList<>(List.of(
             new Book("1", "Harry Potter", "J.K. Rowling", "A young wizard discovers his magical abilities."),

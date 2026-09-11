@@ -1,4 +1,4 @@
-﻿package chnu.cs.security26.controller;
+package chnu.cs.security26.controller;
 
 /*
     @author     Anastasiia Shevchenko

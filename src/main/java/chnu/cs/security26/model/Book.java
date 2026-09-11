@@ -1,4 +1,4 @@
-﻿package chnu.cs.security26.model;
+package chnu.cs.security26.model;
 
 import lombok.*;
 
