@@ -10,47 +10,57 @@ package chnu.cs.security26.service;
 
 
 import chnu.cs.security26.model.Book;
+import chnu.cs.security26.repository.BookRepository;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
     private final List<Book> books = new ArrayList<>(List.of(
             new Book("1", "Harry Potter", "J.K. Rowling", "A young wizard discovers his magical abilities."),
             new Book("2", "The Hobbit", "J.R.R. Tolkien", "The adventure of Bilbo Baggins."),
             new Book("3", "1984", "George Orwell", "A dystopian novel about a totalitarian society.")
     ));
+    private final BookRepository bookRepository;
+
+    @PostConstruct
+    void init(){
+        bookRepository.deleteAll();
+        books.forEach(this::createBook);
+    }
 
     public Book createBook(Book book) {
-        books.add(book);
-        return book;
+        return bookRepository.save(book);
     }
 
     public List<Book> getAllBooks() {
-        return books;
+        return bookRepository.findAll();
     }
 
-    public Book getById(String id) {
-        return books.stream()
-                .filter(book -> book.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public Optional<Book> getById(String id) {
+        return bookRepository.findById(id);
     }
 
     public Book updateBook(String id, Book updatedBook) {
-        Book book = getById(id);
+        Optional<Book> book = bookRepository.findById(id);
 
-        if (book == null) {
+        if (book.isEmpty()) {
             return null;
         }
 
-        book.setTitle(updatedBook.getTitle());
-        book.setAuthor(updatedBook.getAuthor());
-        book.setDescription(updatedBook.getDescription());
+        Book existingBook = book.get();
 
-        return book;
+        existingBook.setTitle(updatedBook.getTitle());
+        existingBook.setAuthor(updatedBook.getAuthor());
+        existingBook.setDescription(updatedBook.getDescription());
+
+        return bookRepository.save(existingBook);
     }
 
     public boolean deleteBook(String id) {
