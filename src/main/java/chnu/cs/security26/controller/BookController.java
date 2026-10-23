@@ -45,4 +45,31 @@ public class BookController {
     @DeleteMapping("/{id}") public boolean deleteBook(@PathVariable String id) {
         return bookService.deleteBook(id);
     }
+
+    @GetMapping("/hello/user")
+    public String helloUser(){
+        return "Hello User!";
+    }
+
+    @GetMapping("/hello/admin")
+    public String helloAdmin(){
+        return "Hello Admin!";
+    }
+
+    @GetMapping("/hello/unknown")
+    public String helloUnknown(){
+        return "Hello Unknown!";
+    }
+
+    @GetMapping("/hello")
+    public String hello(){
+        return "Hello!";
+    }
+
+    @GetMapping("/hello/man")
+    public String helloMan(){
+        return "Hello, man!";
+    }
+
+
 }

@@ -1,0 +1,67 @@
+﻿### 1. ADMIN -> /hello/admin  (очікується 200 OK: "Hello Admin!")
+GET http://localhost:8080/api/v1/books/hello/admin
+Authorization: Basic admin admin
+Accept: application/json
+
+###
+
+### 2. USER -> /hello/admin  (очікується 403 Forbidden: роль USER не має ADMIN)
+GET http://localhost:8080/api/v1/books/hello/admin
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+### 3. USER -> /hello/user  (очікується 200 OK: "Hello User!")
+GET http://localhost:8080/api/v1/books/hello/user
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+### 4. ADMIN -> /hello/user  (очікується 403 Forbidden: hasRole("USER"), а в admin лише ADMIN)
+GET http://localhost:8080/api/v1/books/hello/user
+Authorization: Basic admin admin
+Accept: application/json
+
+###
+
+### 5. ADMIN -> /hello/man  (очікується 200 OK: hasAnyRole USER, ADMIN)
+GET http://localhost:8080/api/v1/books/hello/man
+Authorization: Basic admin admin
+Accept: application/json
+
+###
+
+### 6. USER -> /hello/man  (очікується 200 OK: hasAnyRole USER, ADMIN)
+GET http://localhost:8080/api/v1/books/hello/man
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+### 7. SUPERADMIN -> /hello/man  (очікується 403 Forbidden: роль SUPERADMIN не входить у USER/ADMIN)
+GET http://localhost:8080/api/v1/books/hello/man
+Authorization: Basic superadmin superadmin
+Accept: application/json
+
+###
+
+### 8. Без авторизації -> /hello/user  (очікується 401 Unauthorized)
+GET http://localhost:8080/api/v1/books/hello/user
+Accept: application/json
+
+###
+
+### 9. Без авторизації -> /index.html  (permitAll: 200 OK, або 404, якщо файла немає в static/, але НЕ 401)
+GET http://localhost:8080/index.html
+Accept: text/html
+
+###
+
+### 10. USER -> /hello/unknown  (немає окремого правила -> anyRequest().authenticated(): 200 OK "Hello Unknown!")
+GET http://localhost:8080/api/v1/books/hello/unknown
+Authorization: Basic user user
+Accept: application/json
+
+###
