@@ -14,6 +14,10 @@ import chnu.cs.security26.repository.BookRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +27,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookService {
     private final List<Book> books = new ArrayList<>(List.of(
             new Book("1", "Harry Potter", "J.K. Rowling", "A young wizard discovers his magical abilities."),
@@ -66,6 +71,24 @@ public class BookService {
     }
 
     public boolean deleteBook(String id) {
-        return books.removeIf(book -> book.getId().equals(id));
+        String username;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null ||
+                !authentication.isAuthenticated() ||
+                authentication instanceof AnonymousAuthenticationToken) {
+            username = "unknown";
+        } else {
+            username = authentication.getName();
+        }
+
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isEmpty()) {
+            log.warn("Book with id {} not found, delete requested by {}", id, username);
+            return false;
+        }
+
+        log.info("{} was deleted by {}", book.get(), username);
+        bookRepository.deleteById(id);
+        return true;
     }
 }
