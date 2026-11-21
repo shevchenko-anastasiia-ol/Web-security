@@ -1,4 +1,4 @@
-﻿package chnu.cs.security26.user;
+package chnu.cs.security26.user;
 
 /*
     @author     owner

@@ -1,4 +1,4 @@
-﻿package chnu.cs.security26.user;
+package chnu.cs.security26.user;
 
 /*
     @author     owner
@@ -52,9 +52,12 @@ public class User implements UserDetails, Principal {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.roles == null) {
+            return List.of();
+        }
         return this.roles
                 .stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                 .toList()
                 ;
     }
@@ -88,4 +91,9 @@ public class User implements UserDetails, Principal {
     public boolean isEnabled() {
         return enabled;
     }
+
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+
 }
