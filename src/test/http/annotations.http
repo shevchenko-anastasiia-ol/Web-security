@@ -1,0 +1,135 @@
+﻿### 1. ADMIN -> /hello/admin  (очікується 200 OK: "Hello Admin!")
+GET http://localhost:8080/api/v1/books/hello/admin
+Authorization: Basic admin admin
+Accept: application/json
+
+###
+
+### 2. USER -> /hello/admin  (очікується 403 Forbidden: роль USER не має ADMIN)
+GET http://localhost:8080/api/v1/books/hello/admin
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+### 3. USER -> /hello/user  (очікується 200 OK: "Hello User!")
+GET http://localhost:8080/api/v1/books/hello/user
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+### 4. ADMIN -> /hello/user  (очікується 403 Forbidden: hasRole("USER"), а в admin лише ADMIN)
+GET http://localhost:8080/api/v1/books/hello/user
+Authorization: Basic admin admin
+Accept: application/json
+
+###
+
+### 5. ADMIN -> /hello/man  (очікується 200 OK: hasAnyRole USER, ADMIN)
+GET http://localhost:8080/api/v1/books/hello/man
+Authorization: Basic admin admin
+Accept: application/json
+
+###
+
+### 6. USER -> /hello/man  (очікується 200 OK: hasAnyRole USER, ADMIN)
+GET http://localhost:8080/api/v1/books/hello/man
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+### 7. SUPERADMIN -> /hello/man  (очікується 403 Forbidden: роль SUPERADMIN не входить у USER/ADMIN)
+GET http://localhost:8080/api/v1/books/hello/man
+Authorization: Basic superadmin superadmin
+Accept: application/json
+
+###
+
+### 8. Без авторизації -> /hello/user  (очікується 401 Unauthorized)
+GET http://localhost:8080/api/v1/books/hello/user
+Accept: application/json
+
+###
+
+### 9. Без авторизації -> /index.html  (permitAll: 200 OK, або 404, якщо файла немає в static/, але НЕ 401)
+GET http://localhost:8080/index.html
+Accept: text/html
+
+###
+
+### 10. USER -> /hello/unknown  (немає окремого правила -> anyRequest().authenticated(): 200 OK "Hello Unknown!")
+GET http://localhost:8080/api/v1/books/hello/unknown
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+### 11. SUPERADMIN -> /hello/man  (очікується 200 OK: @PreAuthorize hasAnyRole('ADMIN', 'SUPERADMIN'))
+GET http://localhost:8080/api/v1/books/hello/man
+Authorization: Basic superadmin superadmin
+Accept: application/json
+
+###
+
+### 12. SUPERADMIN -> /hello/admin  (очікується 403 Forbidden: hasRole('ADMIN'), а в superadmin лише SUPERADMIN — ролі не ієрархічні)
+GET http://localhost:8080/api/v1/books/hello/admin
+Authorization: Basic superadmin superadmin
+Accept: application/json
+
+###
+
+### 13. SUPERADMIN -> /hello/user  (очікується 403 Forbidden: hasRole('USER'))
+GET http://localhost:8080/api/v1/books/hello/user
+Authorization: Basic superadmin superadmin
+Accept: application/json
+
+###
+
+### 14. USER -> /hello  (немає @PreAuthorize -> достатньо автентифікації: 200 OK "Hello!")
+GET http://localhost:8080/api/v1/books/hello
+Authorization: Basic user user
+Accept: application/json
+
+###
+
+### 15. Без авторизації -> /hello  (очікується 401 Unauthorized: anyRequest().authenticated())
+GET http://localhost:8080/api/v1/books/hello
+Accept: application/json
+
+###
+
+### 16. ADMIN з неправильним паролем -> /hello/admin  (очікується 401 Unauthorized: автентифікація не пройшла, до @PreAuthorize не доходить)
+GET http://localhost:8080/api/v1/books/hello/admin
+Authorization: Basic admin wrongpassword
+Accept: application/json
+
+###
+
+### 17. Неіснуючий користувач -> /hello/user  (очікується 401 Unauthorized: такого користувача немає в InMemoryUserDetailsManager)
+GET http://localhost:8080/api/v1/books/hello/user
+Authorization: Basic guest guest
+Accept: application/json
+
+###
+
+### 18. Без авторизації -> /hello/admin  (очікується 401, а НЕ 403: фільтр автентифікації спрацьовує раніше за @PreAuthorize)
+GET http://localhost:8080/api/v1/books/hello/admin
+Accept: application/json
+
+###
+
+### 19. SUPERADMIN -> /hello/unknown  (немає @PreAuthorize -> будь-яка роль після автентифікації: 200 OK "Hello Unknown!")
+GET http://localhost:8080/api/v1/books/hello/unknown
+Authorization: Basic superadmin superadmin
+Accept: application/json
+
+###
+
+### 20. USER -> GET /api/v1/books  (метод без @PreAuthorize -> 200 OK, JSON-список книг)
+GET http://localhost:8080/api/v1/books
+Authorization: Basic user user
+Accept: application/json
+
+###

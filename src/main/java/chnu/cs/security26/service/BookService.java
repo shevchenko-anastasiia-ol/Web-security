@@ -12,7 +12,9 @@ package chnu.cs.security26.service;
 import chnu.cs.security26.model.Book;
 import chnu.cs.security26.repository.BookRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

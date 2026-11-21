@@ -11,6 +11,7 @@ package chnu.cs.security26.controller;
 import chnu.cs.security26.model.Book;
 import chnu.cs.security26.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,11 +47,13 @@ public class BookController {
         return bookService.deleteBook(id);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/hello/user")
     public String helloUser(){
         return "Hello User!";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/hello/admin")
     public String helloAdmin(){
         return "Hello Admin!";
@@ -66,6 +69,7 @@ public class BookController {
         return "Hello!";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
     @GetMapping("/hello/man")
     public String helloMan(){
         return "Hello, man!";
